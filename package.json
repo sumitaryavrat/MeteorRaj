@@ -1,0 +1,19 @@
+{
+  "name": "meteorRaj",
+  "private": true,
+  "scripts": {
+    "start": "meteor run",
+    "test": "meteor test --once --driver-package meteortesting:mocha"
+  },
+  "dependencies": {
+    "@babel/runtime": "7.0.0-beta.55",
+    "meteor-node-stubs": "^0.4.1",
+    "react": "^16.4.2",
+    "react-datetime": "^2.15.0",
+    "react-dom": "^16.4.2",
+    "react-form": "^3.5.6"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2"
+  }
+}

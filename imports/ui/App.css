@@ -1,0 +1,9 @@
+.Main{
+    justify-content: center;
+    align-items: center;
+
+};
+.Header{
+    height: 250px;
+    background-color: darkkhaki;
+}

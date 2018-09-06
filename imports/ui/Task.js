@@ -32,12 +32,12 @@ export default class Task extends Component {
          Delete
         </button>:''
  }
-        <input
+        {/* <input
           type="checkbox"
           readOnly
           checked={!!this.props.task.checked}
           onClick={this.toggleChecked.bind(this)}
-        />
+        /> */}
  {/* { this.props.showPrivateButton ? (
           <button className="toggle-private" onClick={this.togglePrivate.bind(this)}>
             { this.props.task.private ? 'Private' : 'Public' }

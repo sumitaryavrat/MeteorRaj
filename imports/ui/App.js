@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
+
 import { withTracker } from 'meteor/react-meteor-data';
 import ReactDOM from 'react-dom';
 import { Tasks } from '../api/tasks.js';
 import UIWrapper from './UIWrapper.js';
 import Task from './Task.js';
+import Posts from './Posts.js';
 import { Meteor } from 'meteor/meteor';
+
 //import MyList from './Demo'
 // App component - represents the whole app
 class App extends Component {
@@ -13,11 +16,13 @@ class App extends Component {
  
     this.state = {
       hideCompleted: false,
+      check:true,
+      showNhide:false
     };
   }
  
-  handleSubmit(event) {
-    event.preventDefault();
+  handleSubmit() {
+   
  
     // Find the text field via the React ref
     const text = ReactDOM.findDOMNode(this.refs.textInput).value.trim();
@@ -46,7 +51,7 @@ class App extends Component {
     return filteredTasks.map((task) => {
       const currentUserId = this.props.currentUser && this.props.currentUser._id;
       const showPrivateButton = task.owner === currentUserId;
- 
+       
       return (
         <Task
           key={task._id}
@@ -58,35 +63,63 @@ class App extends Component {
   }
  
   render() {
+    
     return (
-      <div className="container">
-        <header>
-        <h1>Number of blog-Post ({this.props.incompleteCount})</h1>
+      this.state.check?<div className="container">
+       <header style={{justifyContent:'space-between',height:'20%'}}>
+        <UIWrapper /> 
+        <h1>List of blog-Post ({this.props.incompleteCount})</h1>
           <label className="hide-completed">
-            <input
-              type="checkbox"
-              readOnly
-              checked={this.state.hideCompleted}
-              onClick={this.toggleHideCompleted.bind(this)}
-            />
-            Hide Completed Tasks
+            <button
+          onClick={()=>{ this.props.currentUser ?this.setState({check:false}):alert("Please Log in first")}}
+            >Write a blog</button>
+            
           </label>
-          <UIWrapper />
-          { this.props.currentUser ?
+         
+          {/* { this.props.currentUser ?
             <form className="new-task" onSubmit={this.handleSubmit.bind(this)} >
               <input
                 type="text"
                 ref="textInput"
                 placeholder="Type to add new tasks"
               />
-            </form> : ''
-          }
+            </form>
+             : ''
+          } */}
          
         </header>
  
         <ul>
         {this.renderTasks()}
         </ul>
+ </div>:<div className="container">
+          <header>
+        <UIWrapper /> 
+          <label className="hide-completed">
+            <button
+          onClick={()=>this.setState({check:true})}
+            >Cancel</button>
+             
+          </label>
+          <label className="hide-completed">   <button
+          onClick={()=>ReactDOM.findDOMNode(this.refs.textInput).value==""?'':this.handleSubmit()}
+            >Save</button></label>
+         <Posts/>
+         <label className="post-Title">
+         Title:
+              <input
+                type="text"
+                ref="textInput"
+                placeholder="Add a title for your Post"
+              />
+           
+            </label>
+            { this.props.currentUser ?'':this.setState({check:true})}
+        </header>
+     <div className='Body'>
+          </div>
+          
+
 
       </div>
      );

@@ -22,7 +22,11 @@ body {
     min-height: 100%;
     background: white;
   }
-   
+  .Body{
+    width: 500pt;
+    height: 300pt;
+  
+  }
   header {
     background: #d2edf4;
     background-image: linear-gradient(to bottom, #d0edf5, #e1e5f0 100%);
@@ -33,6 +37,8 @@ body {
   #login-buttons {
     display: block;
   }
+
+
    
   h1 {
     font-size: 1.5em;
@@ -104,7 +110,12 @@ body {
   header .hide-completed {
     float: right;
   }
-   
+  header .post-Title{
+  
+  }
+   header .headerDiv{
+   flex-direction: 'row',
+   }
   .toggle-private {
     margin-left: 5px;
   }

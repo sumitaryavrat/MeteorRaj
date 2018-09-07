@@ -44,8 +44,8 @@ export default class Task extends Component {
           </button>
         ) : ''} */}
 
- <button className="toggle-private" onClick={()=>console.log("check it")}><span className="text">
-          <strong>{this.props.task.username}</strong>: {this.props.task.text}
+ <button className="toggle-private" onClick={()=>this.props.onPressBtn(this.props.task)}><span className="text">
+ <strong>{JSON.stringify(this.props.task.createdAt).slice(1,11)}:- {this.props.task.username}</strong>: {this.props.task.text}
         </span></button>
       </li>
     );

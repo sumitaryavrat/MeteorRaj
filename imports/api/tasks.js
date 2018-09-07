@@ -14,9 +14,9 @@ if (Meteor.isServer) {
     });
   }
 Meteor.methods({
-    'tasks.insert'(text) {
+    'tasks.insert'(text,text1) {
       check(text, String);
-   
+      check(text1, String);
       // Make sure the user is logged in before inserting a task
       if (! this.userId) {
         throw new Meteor.Error('not-authorized');
@@ -24,6 +24,7 @@ Meteor.methods({
    
       Tasks.insert({
         text,
+        text1,
         createdAt: new Date(),
         owner: this.userId,
         username: Meteor.users.findOne(this.userId).username,

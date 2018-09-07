@@ -23,9 +23,26 @@ body {
     background: white;
   }
   .Body{
-    width: 500pt;
-    height: 300pt;
+    width: 100%;
+    height: 500px ;
+    padding: 20px 15px 15px 15px;
+    position: relative;
+
   
+  }
+  .textContent{
+    width: 95%;
+     height: 90%; 
+     font-size: 0.5cm;
+  }
+  .textShow{
+    max-height: 90%;
+    
+    max-width: 90%;
+    font-size: 0.5cm;
+  }
+  .textTitle{
+     font-size: 0.5cm;
   }
   header {
     background: #d2edf4;
@@ -110,9 +127,7 @@ body {
   header .hide-completed {
     float: right;
   }
-  header .post-Title{
   
-  }
    header .headerDiv{
    flex-direction: 'row',
    }

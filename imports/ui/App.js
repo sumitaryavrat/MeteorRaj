@@ -17,7 +17,9 @@ class App extends Component {
     this.state = {
       hideCompleted: false,
       check:true,
-      showNhide:false
+      nav:true,
+      showNhide:false,
+      content:null
     };
   }
  
@@ -26,15 +28,19 @@ class App extends Component {
  
     // Find the text field via the React ref
     const text = ReactDOM.findDOMNode(this.refs.textInput).value.trim();
-    Meteor.call('tasks.insert', text);
+    const text1 = ReactDOM.findDOMNode(this.refs.Content).value;
+
+    Meteor.call('tasks.insert', text,text1);
     Tasks.insert({
       text,
+      text1,
       createdAt: new Date(), // current time
       owner: Meteor.userId(),           // _id of logged in user
       username: Meteor.user().username,  // username of logged in user
     });
  
     // Clear form
+    ReactDOM.findDOMNode(this.refs.Content).value ='';
     ReactDOM.findDOMNode(this.refs.textInput).value = '';
   }
   toggleHideCompleted() {
@@ -44,6 +50,7 @@ class App extends Component {
     
   }
   renderTasks() {
+  
     let filteredTasks = this.props.tasks;
     if (this.state.hideCompleted) {
       filteredTasks = filteredTasks.filter(task => !task.checked);
@@ -57,6 +64,7 @@ class App extends Component {
           key={task._id}
           task={task}
           showPrivateButton={showPrivateButton}
+          onPressBtn={(t)=>{this.setState({content:t}),this.setState({nav:false})}}
         />
       );
     });
@@ -64,8 +72,9 @@ class App extends Component {
  
   render() {
     
-    return (
-      this.state.check?<div className="container">
+  
+ return (
+  this.state.nav? this.state.check?<div className="container">
        <header style={{justifyContent:'space-between',height:'20%'}}>
         <UIWrapper /> 
         <h1>List of blog-Post ({this.props.incompleteCount})</h1>
@@ -106,8 +115,8 @@ class App extends Component {
             >Save</button></label>
          <Posts/>
          <label className="post-Title">
-         Title:
-              <input
+         <h3>Title:</h3>
+              <input className="textTitle"
                 type="text"
                 ref="textInput"
                 placeholder="Add a title for your Post"
@@ -117,6 +126,44 @@ class App extends Component {
             { this.props.currentUser ?'':this.setState({check:true})}
         </header>
      <div className='Body'>
+     <label className="post-Title"><h2>Containt:</h2></label><textarea className="textContent"
+      type="text"
+      ref="Content"
+      placeholder="Blog Content"/>
+          </div>
+          
+
+
+      </div>:<div className="container">
+          <header>
+       
+          <label className="hide-completed">
+            <button
+          onClick={()=>this.setState({nav:true})}
+            >Back</button>
+             
+          </label> {/*
+          <label className="hide-completed">   <button
+          onClick={()=>ReactDOM.findDOMNode(this.refs.textInput).value==""?'':this.handleSubmit()}
+            >Save</button></label> */}
+          <label className="post-Title">
+
+        <h3>Writer: {this.state.content.username}</h3></label>
+      
+         <label className="post-Title">
+         <h3>{this.state.content.text}</h3>
+              {/* <input className="textTitle"
+                type="text"
+                ref="textInput"
+                placeholder="Add a title for your Post"
+              /> */}
+           
+            </label>
+            { this.props.currentUser ?'':this.setState({check:true})}
+        </header>
+     <div className='Body'>
+     <label className="post-Title"></label><div className="textShow"
+    >{this.state.content.text1}</div>
           </div>
           
 

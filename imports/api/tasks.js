@@ -14,9 +14,10 @@ if (Meteor.isServer) {
     });
   }
 Meteor.methods({
-    'tasks.insert'(text,text1) {
+    'tasks.insert'(text,text1,cmnt) {
       check(text, String);
       check(text1, String);
+      check(cmnt,Array);
       // Make sure the user is logged in before inserting a task
       if (! this.userId) {
         throw new Meteor.Error('not-authorized');
@@ -25,6 +26,7 @@ Meteor.methods({
       Tasks.insert({
         text,
         text1,
+        cmnt,
         createdAt: new Date(),
         owner: this.userId,
         username: Meteor.users.findOne(this.userId).username,
@@ -39,6 +41,17 @@ Meteor.methods({
       }
       Tasks.remove(taskId);
     },
+    'tasks.removeCmnt'(index,taskId) {
+      check(taskId, String);
+      const task = Tasks.findOne(taskId);
+      // if (task.private && task.owner !== this.userId) {
+      //   // If the task is private, make sure only the owner can delete it
+      //   throw new Meteor.Error('not-authorized');
+      // }
+      const cmnt = task.cmnt
+      cmnt.splice(index, 1);
+      Tasks.update(taskId, { $set: { cmnt: cmnt} });
+    },
     'tasks.setChecked'(taskId, setChecked) {
       check(taskId, String);
       check(setChecked, Boolean);
@@ -49,17 +62,18 @@ Meteor.methods({
       }
       Tasks.update(taskId, { $set: { checked: setChecked } });
     },
-    'tasks.setPrivate'(taskId, setToPrivate) {
+    'tasks.cmnt'(taskId,newCmnt) {
         check(taskId, String);
-        check(setToPrivate, Boolean);
+        check(newCmnt, String);
      
         const task = Tasks.findOne(taskId);
-     
+        const a = task.cmnt
+        a.push(newCmnt)
         // Make sure only the task owner can make a task private
-        if (task.owner !== this.userId) {
-          throw new Meteor.Error('not-authorized');
-        }
+        // if (task.owner !== this.userId) {
+        //   throw new Meteor.Error('not-authorized');
+        // }
      
-        Tasks.update(taskId, { $set: { private: setToPrivate } });
+        Tasks.update(taskId, { $set: { cmnt: a } });
       },
   });

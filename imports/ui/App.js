@@ -19,7 +19,9 @@ class App extends Component {
       check:true,
       nav:true,
       showNhide:false,
-      content:null
+      content:null,
+      Comment:'',
+      commentsArray:[]
     };
   }
  
@@ -29,11 +31,13 @@ class App extends Component {
     // Find the text field via the React ref
     const text = ReactDOM.findDOMNode(this.refs.textInput).value.trim();
     const text1 = ReactDOM.findDOMNode(this.refs.Content).value;
+    const cmnt = this.state.commentsArray
 
-    Meteor.call('tasks.insert', text,text1);
+    Meteor.call('tasks.insert', text,text1,cmnt);
     Tasks.insert({
       text,
       text1,
+      cmnt,
       createdAt: new Date(), // current time
       owner: Meteor.userId(),           // _id of logged in user
       username: Meteor.user().username,  // username of logged in user
@@ -47,6 +51,19 @@ class App extends Component {
     this.setState({
       hideCompleted: !this.state.hideCompleted,
     });
+    
+  }
+  AddComment(){
+    const CommentsArray =ReactDOM.findDOMNode(this.refs.Comment).value;
+    const taskId = this.state.content._id
+    const cmnt ={"array":CommentsArray,"createdAt": new Date(),"userId":Meteor.userId(),"username": Meteor.user().username}
+    Meteor.call('tasks.cmnt',taskId,JSON.stringify(cmnt));
+    Meteor.subscribe('Stuff').ready()
+  }
+  deleteCmnt(index){
+    const taskId = this.state.content._id
+      Meteor.call('tasks.removeCmnt',index,taskId);
+      Meteor.subscribe('Stuff').ready()
     
   }
   renderTasks() {
@@ -64,7 +81,8 @@ class App extends Component {
           key={task._id}
           task={task}
           showPrivateButton={showPrivateButton}
-          onPressBtn={(t)=>{this.setState({content:t}),this.setState({nav:false})}}
+          onPressBtn={(t)=>{this.setState({content:t}),this.setState({nav:false}),this.setState({commentsArray: t.cmnt});
+          }}
         />
       );
     });
@@ -139,7 +157,7 @@ class App extends Component {
        
           <label className="hide-completed">
             <button
-          onClick={()=>this.setState({nav:true})}
+          onClick={()=>{this.setState({nav:true}),this.setState({commentsArray:[]})}}
             >Back</button>
              
           </label> {/*
@@ -166,8 +184,64 @@ class App extends Component {
     >{this.state.content.text1}</div>
           </div>
           
+          <div className='Comments'>
+     <label className="Comments"><h3>Comments:</h3></label>{
+      this.state.commentsArray.map((item,index)=>
+    {
+      var a = JSON.parse(item)
 
+      
+    return( <header>
+       <div  className='Comments'><strong> {JSON.stringify(a.createdAt).slice(1,11)} {a.username} : </strong>{a.array}</div>
+       { Meteor.user().username == a.username ?<button className="delete" onClick={()=>this.deleteCmnt(index)}>
+         Delete
+        </button>:console.log(JSON.stringify(Meteor.userId()) )
+        
+ }
+    </header>)
+    })
+    }
 
+   
+          </div>
+  <header>
+       
+       {/*
+       <label className="hide-completed">   <button
+       onClick={()=>ReactDOM.findDOMNode(this.refs.textInput).value==""?'':this.handleSubmit()}
+         >Save</button></label> */}
+       
+
+     <h3>{Meteor.user().username}</h3><textarea className="Comments"
+      type="text"
+      ref="Comment"
+      placeholder="Comment"/>
+        
+      <label className="hide-completed">
+            <button
+          onClick={()=>ReactDOM.findDOMNode(this.refs.Comment).value=""}
+            >Clear</button>
+             
+          </label>
+    <label className="hide-completed">
+         <button
+       onClick={()=>{this.setState({Comment:ReactDOM.findDOMNode(this.refs.Comment).value}),this.AddComment(),ReactDOM.findDOMNode(this.refs.Comment).value=""}}
+         >Add Comment</button>
+          
+       </label>
+     
+      <label className="post-Title">
+      <h3></h3>
+           {/* <input className="textTitle"
+             type="text"
+             ref="textInput"
+             placeholder="Add a title for your Post"
+           /> */}
+        
+         </label>
+         { this.props.currentUser ?'':this.setState({check:true})}
+       
+     </header>
       </div>
      );
     }

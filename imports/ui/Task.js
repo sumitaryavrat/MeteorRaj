@@ -25,9 +25,10 @@ export default class Task extends Component {
  
     return (
           <li className={taskClassName}>
-          <button className="delete" onClick={()=>console.log("edit")}>
+           {/* { this.props.showPrivateButton ?<button className="delete" onClick={()=>console.log(this.props.task._id)}>
          Edit
-        </button>
+        </button>:''
+ } */}
        { this.props.showPrivateButton ?<button className="delete" onClick={this.deleteThisTask.bind(this)}>
          Delete
         </button>:''

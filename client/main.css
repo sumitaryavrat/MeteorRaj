@@ -24,15 +24,25 @@ body {
   }
   .Body{
     width: 100%;
-    height: 500px ;
+   min-height: 500px;
     padding: 20px 15px 15px 15px;
     position: relative;
 
   
   }
+  .Comments{
+    width: 96%;
+    padding: 20px 15px 15px 15px;
+    position: relative;
+    border-width: 2px;
+    border-color: dimgrey
+
+
+  
+  }
   .textContent{
     width: 95%;
-     height: 90%; 
+    min-height: 500px;
      font-size: 0.5cm;
   }
   .textShow{

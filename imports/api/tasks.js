@@ -76,4 +76,34 @@ Meteor.methods({
      
         Tasks.update(taskId, { $set: { cmnt: a } });
       },
+      'tasks.updateCmnt'(taskId,newCmnt,index) {
+        check(taskId, String);
+        check(newCmnt, String);
+     
+        const task = Tasks.findOne(taskId);
+        const a = task.cmnt
+        a[index] = newCmnt
+        // Make sure only the task owner can make a task private
+        // if (task.owner !== this.userId) {
+        //   throw new Meteor.Error('not-authorized');
+        // }
+     
+        Tasks.update(taskId, { $set: { cmnt: a } });
+      },
+      'tasks.update'(text,text1,taskId) {
+        check(text, String);
+        check(text1, String);
+     console.log(text);
+     
+        const task = Tasks.findOne(taskId);
+      //  task.text =text,
+
+       // a.push(newCmnt)
+        // Make sure only the task owner can make a task private
+        // if (task.owner !== this.userId) {
+        //   throw new Meteor.Error('not-authorized');
+        // }
+     
+        Tasks.update(taskId, { $set: { text:text,text1:text1} });
+      },
   });

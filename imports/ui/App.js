@@ -20,19 +20,23 @@ class App extends Component {
       nav:true,
       showNhide:false,
       content:null,
+      edit:false,
+      title:'',
+      contentData:'',
       Comment:'',
-      commentsArray:[]
+      commentsArray:[],
+      index:null
     };
   }
  
   handleSubmit() {
    
- 
+    const taskId = this.state.content._id
     // Find the text field via the React ref
-    const text = ReactDOM.findDOMNode(this.refs.textInput).value.trim();
-    const text1 = ReactDOM.findDOMNode(this.refs.Content).value;
+    const text = this.state.title;
+    const text1 =this.state.contentData;
     const cmnt = this.state.commentsArray
-
+this.state.edit?Meteor.call('tasks.update',text,text1,taskId):
     Meteor.call('tasks.insert', text,text1,cmnt);
     Tasks.insert({
       text,
@@ -44,8 +48,9 @@ class App extends Component {
     });
  
     // Clear form
-    ReactDOM.findDOMNode(this.refs.Content).value ='';
-    ReactDOM.findDOMNode(this.refs.textInput).value = '';
+    this.setState({edit:false})
+   this.setState({title:''})
+   this.setState({contentData:''})
   }
   toggleHideCompleted() {
     this.setState({
@@ -54,17 +59,28 @@ class App extends Component {
     
   }
   AddComment(){
-    const CommentsArray =ReactDOM.findDOMNode(this.refs.Comment).value;
+    const CommentsArray =this.state.Comment;
     const taskId = this.state.content._id
     const cmnt ={"array":CommentsArray,"createdAt": new Date(),"userId":Meteor.userId(),"username": Meteor.user().username}
-    Meteor.call('tasks.cmnt',taskId,JSON.stringify(cmnt));
-    Meteor.subscribe('Stuff').ready()
+    this.state.edit?Meteor.call('tasks.updateCmnt',taskId,JSON.stringify(cmnt),this.state.index):Meteor.call('tasks.cmnt',taskId,JSON.stringify(cmnt));
+    Meteor.subscribe('tasks').ready()
+    this.setState({edit:false})
+    const task = Tasks.findOne(taskId);
+    this.setState({commentsArray: task.cmnt})
   }
   deleteCmnt(index){
     const taskId = this.state.content._id
       Meteor.call('tasks.removeCmnt',index,taskId);
-      Meteor.subscribe('Stuff').ready()
+      Meteor.subscribe('tasks').ready()
+      const task = Tasks.findOne(taskId);
+      this.setState({commentsArray: task.cmnt})
     
+  }
+  updateCmnt(index,data){
+    this.setState({Comment:data})
+    this.setState({edit:true})
+    this.setState({index:index})
+
   }
   renderTasks() {
   
@@ -81,16 +97,33 @@ class App extends Component {
           key={task._id}
           task={task}
           showPrivateButton={showPrivateButton}
-          onPressBtn={(t)=>{this.setState({content:t}),this.setState({nav:false}),this.setState({commentsArray: t.cmnt});
+          editPress={(t)=>{this.setState({edit:true}), this.setState({content:t}),this.setState({check:false}),this.setState({title:t.text}),this.setState({contentData:t.text1})}}
+          onPressBtn={(t)=>{this.setState({content:t}),this.props.currentUser ?this.setState({nav:false}):alert("Please Log in first"),this.setState({commentsArray: t.cmnt});
           }}
         />
       );
     });
   }
- 
+  handleChange (text) {
+  //  this.setState({edit:false})
+    this.setState({title:text.target.value})
+
+  }
+  handleChange1 (text) 
+  {
+    //  this.setState({edit:false})
+      this.setState({contentData:text.target.value})
+  
+    }
+    handleChange2 (text) 
+  {
+    //  this.setState({edit:false})
+      this.setState({Comment:text.target.value})
+  
+    }
   render() {
     
-  
+
  return (
   this.state.nav? this.state.check?<div className="container">
        <header style={{justifyContent:'space-between',height:'20%'}}>
@@ -129,14 +162,18 @@ class App extends Component {
              
           </label>
           <label className="hide-completed">   <button
-          onClick={()=>ReactDOM.findDOMNode(this.refs.textInput).value==""?'':this.handleSubmit()}
+          onClick={()=> this.state.title==""?'':this.handleSubmit()}
             >Save</button></label>
          <Posts/>
          <label className="post-Title">
          <h3>Title:</h3>
               <input className="textTitle"
                 type="text"
+                id="textInput"
                 ref="textInput"
+                value={this.state.title}
+                onChange={(text)=> {this.handleChange(text)}
+                }
                 placeholder="Add a title for your Post"
               />
            
@@ -147,6 +184,8 @@ class App extends Component {
      <label className="post-Title"><h2>Containt:</h2></label><textarea className="textContent"
       type="text"
       ref="Content"
+      value={this.state.contentData}
+      onChange={(text)=> {this.handleChange1(text)}}
       placeholder="Blog Content"/>
           </div>
           
@@ -193,9 +232,13 @@ class App extends Component {
       
     return( <header>
        <div  className='Comments'><strong> {JSON.stringify(a.createdAt).slice(1,11)} {a.username} : </strong>{a.array}</div>
-       { Meteor.user().username == a.username ?<button className="delete" onClick={()=>this.deleteCmnt(index)}>
+       { Meteor.user().username == a.username ?<button className="delete" onClick={()=>this.updateCmnt(index,a.array)}>
+         edit
+        </button>:''
+        
+ } { Meteor.user().username == a.username ?<button className="delete" onClick={()=>this.deleteCmnt(index)}>
          Delete
-        </button>:console.log(JSON.stringify(Meteor.userId()) )
+        </button>:''
         
  }
     </header>)
@@ -215,17 +258,19 @@ class App extends Component {
      <h3>{Meteor.user().username}</h3><textarea className="Comments"
       type="text"
       ref="Comment"
-      placeholder="Comment"/>
+      placeholder="Comment"
+      value={this.state.Comment}
+      onChange={(text)=> {this.handleChange2(text)}}/>
         
       <label className="hide-completed">
             <button
-          onClick={()=>ReactDOM.findDOMNode(this.refs.Comment).value=""}
+          onClick={()=>this.setState({Comment:""})}
             >Clear</button>
              
           </label>
     <label className="hide-completed">
          <button
-       onClick={()=>{this.setState({Comment:ReactDOM.findDOMNode(this.refs.Comment).value}),this.AddComment(),ReactDOM.findDOMNode(this.refs.Comment).value=""}}
+       onClick={()=>{this.AddComment(),this.setState({Comment:""})}}
          >Add Comment</button>
           
        </label>

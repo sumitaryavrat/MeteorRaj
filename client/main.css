@@ -3,19 +3,15 @@ body {
     background-color: #315481;
     background-image: linear-gradient(to bottom, #315481, #918e82 100%);
     background-attachment: fixed;
-   
     position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-   
     padding: 0;
     margin: 0;
-   
     font-size: 14px;
   }
-   
   .container {
     max-width: 90%;
     margin: 0 auto;
@@ -27,8 +23,6 @@ body {
    min-height: 500px;
     padding: 20px 15px 15px 15px;
     position: relative;
-
-  
   }
   .Comments{
     width: 80%;
@@ -36,9 +30,6 @@ body {
     position: relative;
     border-width: 2px;
     border-color: dimgrey
-
-
-  
   }
   .showList{
     width: 96%;
@@ -46,9 +37,6 @@ body {
     position: relative;
     border-width: 22px;
     border-color: rgb(15, 13, 13)
-
-
-  
   }
   .table{
     width: 96%;
@@ -57,7 +45,7 @@ body {
     width: 95%;
     align-items: flex-start;
     min-height: 500px;
-     font-size: 0.5cm;
+    font-size: 0.5cm;
   }
   .textShow{
     max-height: 90%;
@@ -69,19 +57,15 @@ body {
   .textTitle{
      font-size: 0.5cm;
   }
-  header {
-    background: #d2edf4;
-    background-image: linear-gradient(to bottom, #d0edf5, #e1e5f0 100%);
-    padding: 20px 15px 15px 15px;
-    position: relative;
+header {
+  background: #d2edf4;
+  background-image: linear-gradient(to bottom, #d0edf5, #e1e5f0 100%);
+  padding: 20px 15px 15px 15px;
+  position: relative;
   }
-   
   #login-buttons {
     display: block;
   }
-
-
-   
   h1 {
     font-size: 1.5em;
     margin: 0;
@@ -89,13 +73,11 @@ body {
     display: inline-block;
     margin-right: 1em;
   }
-   
   form {
     margin-top: 10px;
     margin-bottom: -10px;
     position: relative;
   }
-   
   .new-task input {
     box-sizing: border-box;
     padding: 10px 0;
@@ -105,18 +87,15 @@ body {
     padding-right: 80px;
     font-size: 1em;
   }
-   
   .new-task input:focus{
     outline: 0;
   }
-   
   ul {
     margin: 0;
     padding: 0;
     background: white;
   }
-   
-  .delete {
+   .delete {
     float: right;
     font-weight: bold;
     background: none;
@@ -124,53 +103,43 @@ body {
     border: none;
     position: relative;
   }
-   
   li {
     position: relative;
     list-style: none;
     padding: 15px;
     border-bottom: #eee solid 1px;
   }
-   
   li .text {
     margin-left: 10px;
   }
-   
   li.checked {
     color: #888;
   }
-   
   li.checked .text {
     text-decoration: line-through;
   }
-   
   li.private {
     background: #eee;
     border-color: #ddd;
   }
-   
   header .hide-completed {
     float: right;
   }
-  
-   header .headerDiv{
+  header .headerDiv{
    flex-direction: 'row',
    }
   .toggle-private {
     margin-left: 5px;
   }
-   
   @media (max-width: 600px) {
     li {
       padding: 12px 15px;
     }
-   
-    .search {
+   .search {
       width: 150px;
       clear: both;
     }
-   
-    .new-task input {
+   .new-task input {
       padding-bottom: 5px;
     }
   }

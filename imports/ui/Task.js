@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { Tasks } from '../api/tasks.js';
 import classnames from 'classnames';
+import Pagination from "react-js-pagination";
 // Task component - represents a single todo item
 export default class Task extends Component {
   toggleChecked() {

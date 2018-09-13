@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
 
+import React, { Component } from 'react';
+import Pagination from "react-js-pagination";
 import { withTracker } from 'meteor/react-meteor-data';
 import ReactDOM from 'react-dom';
 import { Tasks } from '../api/tasks.js';
@@ -7,7 +8,8 @@ import UIWrapper from './UIWrapper.js';
 import Task from './Task.js';
 import Posts from './Posts.js';
 import { Meteor } from 'meteor/meteor';
-
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { sunburst } from "react-syntax-highlighter/dist/styles/hljs";
 //import MyList from './Demo'
 // App component - represents the whole app
 class App extends Component {
@@ -25,18 +27,21 @@ class App extends Component {
       contentData:'',
       Comment:'',
       commentsArray:[],
-      index:null
+      index:null,
+      activePage: 1,
+      start:0,
+      end:8
     };
   }
  
   handleSubmit() {
    
-    const taskId = this.state.content._id
+    //const taskId = this.state.content._id
     // Find the text field via the React ref
     const text = this.state.title;
     const text1 =this.state.contentData;
     const cmnt = this.state.commentsArray
-this.state.edit?Meteor.call('tasks.update',text,text1,taskId):
+this.state.edit?Meteor.call('tasks.update',text,text1,this.state.content._id):
     Meteor.call('tasks.insert', text,text1,cmnt);
     Tasks.insert({
       text,
@@ -81,6 +86,11 @@ this.state.edit?Meteor.call('tasks.update',text,text1,taskId):
     this.setState({edit:true})
     this.setState({index:index})
 
+  } handlePageChange(pageNumber) {
+    this.setState({start:(pageNumber*8)-8})
+    this.setState({end:pageNumber*8})
+    console.log(`active page is ${pageNumber}`);
+    this.setState({activePage: pageNumber});
   }
   renderTasks() {
   
@@ -88,7 +98,7 @@ this.state.edit?Meteor.call('tasks.update',text,text1,taskId):
     if (this.state.hideCompleted) {
       filteredTasks = filteredTasks.filter(task => !task.checked);
     }
-    return filteredTasks.map((task) => {
+    return filteredTasks.slice(this.state.start,this.state.end).map((task) => {
       const currentUserId = this.props.currentUser && this.props.currentUser._id;
       const showPrivateButton = task.owner === currentUserId;
        
@@ -121,9 +131,17 @@ this.state.edit?Meteor.call('tasks.update',text,text1,taskId):
       this.setState({Comment:text.target.value})
   
     }
+   
   render() {
     
-
+  const hideFirstLastPages = `render() {
+  return (<Pagination
+    activePage={this.state.activePage}
+    itemsCountPerPage={8}
+    totalItemsCount={this.props.tasks.length}
+    pageRangeDisplayed={this.props.tasks.length>=2?2:1}
+    onChange={(pageNumber)=>this.handlePageChange(pageNumber)}
+  />)}`
  return (
   this.state.nav? this.state.check?<div className="container">
        <header style={{justifyContent:'space-between',height:'20%'}}>
@@ -152,6 +170,16 @@ this.state.edit?Meteor.call('tasks.update',text,text1,taskId):
         <ul>
         {this.renderTasks()}
         </ul>
+        <header>{this.props.tasks.length>8?<div className="panel-body">
+<div className='text-center'><Pagination
+          activePage={this.state.activePage}
+          itemsCountPerPage={8}
+          firstPageText={1}
+          lastPageText={this.props.tasks.length%8==0?this.props.tasks.length/8:parseInt(this.props.tasks.length/8)+1}
+          totalItemsCount={this.props.tasks.length}
+          pageRangeDisplayed={this.props.tasks.length>=2?2:1}
+          onChange={(pageNumber)=>this.handlePageChange(pageNumber)}
+        /></div></div>:''}</header>
  </div>:<div className="container">
           <header>
         <UIWrapper /> 

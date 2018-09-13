@@ -31,7 +31,7 @@ body {
   
   }
   .Comments{
-    width: 96%;
+    width: 80%;
     padding: 20px 15px 15px 15px;
     position: relative;
     border-width: 2px;
@@ -40,16 +40,31 @@ body {
 
   
   }
+  .showList{
+    width: 96%;
+    padding: 20px 15px 15px 15px;
+    position: relative;
+    border-width: 22px;
+    border-color: rgb(15, 13, 13)
+
+
+  
+  }
+  .table{
+    width: 96%;
+  }
   .textContent{
     width: 95%;
+    align-items: flex-start;
     min-height: 500px;
      font-size: 0.5cm;
   }
   .textShow{
     max-height: 90%;
-    
+    align-items: flex-start;
     max-width: 90%;
     font-size: 0.5cm;
+    background-color: darkgoldenrod
   }
   .textTitle{
      font-size: 0.5cm;
